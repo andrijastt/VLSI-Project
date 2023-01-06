@@ -20,6 +20,7 @@ module ps2(
     hex hex_inst0(.in(display_reg0), .out(out0));
     hex hex_inst1(.in(display_reg1), .out(out1));
 
+    // komentar
     always @(posedge clk, negedge rst_n) begin
         if(!rst_n) begin
             data_reg <= 8'h00;
