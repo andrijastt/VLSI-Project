@@ -4,15 +4,15 @@ module ps2(
     input rst_n,
     input in,
     output [6:0] out0,
-    output [6:0] out1,
+    output [6:0] out1
 );
 
     wire deb_kbclk;
     deb deb_inst(.clk(clk), .rst_n(rst_n), .in(kbclk), .out(deb_kbclk));
 
     reg [7:0] data_reg, data_next;
-    reg [3:0] display_reg0;
-    reg [3:0] display_reg1;
+    wire [3:0] display_reg0;
+    wire [3:0] display_reg1;
 
     assign display_reg0 = data_reg[3:0];
     assign display_reg1 = data_reg[7:4];
@@ -20,7 +20,7 @@ module ps2(
     hex hex_inst0(.in(display_reg0), .out(out0));
     hex hex_inst1(.in(display_reg1), .out(out1));
 
-    integer i = 0;
+    reg [3:0] i = 4'h0;
 
     always @(posedge clk, negedge rst_n) begin
         if(!rst_n) begin
@@ -31,23 +31,26 @@ module ps2(
         end
     end
 
-    always(*) begin
+    always @(*) begin
         data_next = data_reg;
 
         if(deb_kbclk) begin
             
             // bits that are data
-            if(i > 0 || i < 9) begin
+            if(i > 4'h0 || i < 4'h09) begin
                 data_next[i - 1] = in;
             end
 
-            i = i + 1;
+            i = i + 4'h01;
 
-            if(i == 11) begin
-                i = 0;
+            if(i == 4'hB) begin
+                i = 4'h0;
             end
         end
-        
+        else begin
+            i = 4'h00;
+        end
+
     end
 
 
