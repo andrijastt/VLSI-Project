@@ -20,7 +20,8 @@ module ps2(
     hex hex_inst0(.in(display_reg0), .out(out0));
     hex hex_inst1(.in(display_reg1), .out(out1));
 
-    // komentar
+    integer i = 0;
+
     always @(posedge clk, negedge rst_n) begin
         if(!rst_n) begin
             data_reg <= 8'h00;
@@ -33,6 +34,19 @@ module ps2(
     always(*) begin
         data_next = data_reg;
 
+        if(deb_kbclk) begin
+            
+            // bits that are data
+            if(i > 0 || i < 9) begin
+                data_next[i - 1] = in;
+            end
+
+            i = i + 1;
+
+            if(i == 11) begin
+                i = 0;
+            end
+        end
         
     end
 
