@@ -37,9 +37,18 @@ class generator extends uvm_sequence;
         super.new(name)
     endfunction //new()
 
-    virtual task body();
-        // TODO
-    endtask //body //generator extends uvm_sequences
+	// TODO
+    int num = 20;
+	virtual task body();
+		for (int i = 0; i < num; i++) begin
+			ps2_item item = ps2_item::type_id::create("item");
+			start_item(item);	
+			item.randomize();
+			`uvm_info("Generator", $sformatf("Item %0d/%0d created", i + 1, num), UVM_LOW)
+			item.print();
+			finish_item(item);
+		end
+	endtask
 
 endclass
 
@@ -237,12 +246,10 @@ module testbench;
 
     reg clk;
 
-    // TODO
     ps2_if dut_if (
 		.clk(clk)
 	);
 
-    //TODO
     ps2 dut (
 		.clk(clk),
         .kbclk(dut_if.kbclk),
