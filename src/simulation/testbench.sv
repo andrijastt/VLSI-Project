@@ -220,8 +220,6 @@ class test extends uvm_test;
 endclass
 
 // Interface
-// gde treba kbclk?
-// u zagrade ili ne
 interface ps2_if (
 	input bit clk
 );
