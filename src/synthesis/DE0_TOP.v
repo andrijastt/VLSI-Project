@@ -188,8 +188,13 @@ module DE0_TOP (CLOCK_50,
     //  REG/WIRE declarations
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  == 
     
+    HEX0_DP = 1'b1;
+    HEX1_DP = 1'b1;
+
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  == 
     //  Structural coding
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  == 
+
+    ps2 ps2_inst(.clk(CLOCK_50), .kbclk(PS2_KBCLK), .rst_n(SW[9]), .in(PS2_KBDAT), .out0(HEX0_D), .out1(HEX1_D));
 
 endmodule
