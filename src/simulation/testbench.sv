@@ -164,6 +164,9 @@ class scoreboard extends uvm_scoreboard;
 	// TODO
 	bit [6:0] out0 = 7'h00;
 	bit [6:0] out1 = 7'h00;
+	bit current_state = 1'b0;
+	bit [3:0] i = 4'h0;
+	bit [7:0] data = 8'h00;
 
 	virtual function write(ps2_item item);
 		if (out0 == item.out0 && out1 == item.out1)
@@ -172,6 +175,32 @@ class scoreboard extends uvm_scoreboard;
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))	// TODO
 		
 		// TODO
+		// 0 came, state change, track output
+
+		case (current_state)
+			1'b0: begin
+				if(item.in == 1'b0) begin
+					data = 8'h00;
+					current_state = 1'b1;
+				end
+			end 
+			1'b1: begin
+				data[i] == item.in;
+				i = i + 1;
+
+				if(i == 4'h8 && data != 8'hF0) begin
+					
+					// pogledati kako da se napravi funkcija za HEX da bi se postavili OUT i da se uporedjuju
+				end
+				else begin
+					current_state = 1'b0;
+				end
+
+				i = 4'h0;
+
+			end
+		endcase
+
 		
 
 	endfunction
