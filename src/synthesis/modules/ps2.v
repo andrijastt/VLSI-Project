@@ -25,49 +25,64 @@ module ps2(
     hex hex_inst0(.in(display_reg0), .out(out0));
     hex hex_inst1(.in(display_reg1), .out(out1));
 
-    reg [3:0] i = 4'h0;
+    reg [3:0] i;
+
+    reg state_reg, state_next
+
+    localparam start = 1'b0;
+    localparam data_transfer = 1'b1;
 
     always @(posedge clk, negedge rst_n) begin
         if(!rst_n) begin
             data_reg <= 8'h00;
             next_reg <= 8'h00;
+            i <= 4'h0;
+            state_reg <= start;
         end
         else begin
             data_reg <= data_next;
             next_reg <= next_next;
+            state_reg <= state_next;
         end
     end
 
     always @(*) begin
         data_next = data_reg;
         next_next = next_reg;
+        state_next = state_reg;
 
         if(deb_kbclk) begin
 
-            // check if any data is sending
-            if(i == 4'h0 && in == 1'b0) begin
-                // bits that are data
-                if(i > 4'h0 || i < 4'h9) begin
-                    next_next[i - 1] = in;
+            case (state_reg)
+                start: begin
+                    if(i == 4'h0 && in == 1'b0) begin
+                        state_next = data_transfer;
+                    end      
                 end
 
-                i = i + 4'h1;
+                data_transfer: begin
 
-                if (i == 4'h9)
-                    data_next = next_next;
+                    if(i < 4'h8) begin
+                        next_next[i] = in;
+                    end
 
-                if(i == 4'hB) begin
-                    i = 4'h0;
+                    i = i + 4'h1;
+
+                    // reset
+                    if (i == 4'h8 && next_next != 8'hF0) begin
+                        data_next = next_next;    
+                        i = 4'h0;
+                    end
+
+                    if(i == 4'hA) begin
+                        state_next = start;
+                        data_next = 8'h00;      // ne znam da li ovako da stavimo ili ne
+                        i = 4'h0;
+                    end
                 end
-            end
-            else begin
-                next_next = 8'h00;
-                data_next = next_next;
-            end
-        
+            endcase
         end
 
     end
-
 
 endmodule
