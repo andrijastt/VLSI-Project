@@ -174,6 +174,31 @@ class scoreboard extends uvm_scoreboard;
 		else
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))	// TODO
 		
+	// TODO
+	// valjda se ovako pisu funckuje
+	function int hex(int value);
+
+		case (value)
+			4'b0000: return ~7'h3F;
+            4'b0001: return ~7'h06;
+            4'b0010: return ~7'h5B;
+            4'b0011: return ~7'h4F;
+            4'b0100: return ~7'h66;
+            4'b0101: return ~7'h6D;
+            4'b0110: return ~7'h7D;
+            4'b0111: return ~7'h07;
+            4'b1000: return ~7'h7F;
+            4'b1001: return ~7'h6F;
+            4'b1010: return ~7'h77;
+            4'b1011: return ~7'h7C;
+            4'b1100: return ~7'h39;
+            4'b1101: return ~7'h5E;
+            4'b1110: return ~7'h79;
+            4'b1111: return ~7'h71; 
+		endcase
+
+	endfunction
+	
 		// TODO
 		// 0 came, state change, track output
 
@@ -189,7 +214,8 @@ class scoreboard extends uvm_scoreboard;
 				i = i + 1;
 
 				if(i == 4'h8 && data != 8'hF0) begin
-					
+					out0 = hex(data[3:0]);
+					out1 = hex(data[7:4]);
 					// pogledati kako da se napravi funkcija za HEX da bi se postavili OUT i da se uporedjuju
 				end
 				else begin
