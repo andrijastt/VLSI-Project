@@ -162,7 +162,19 @@ class scoreboard extends uvm_scoreboard;
 	endfunction
 	
 	// TODO
-	
+	bit [6:0] out0 = 7'h00;
+	bit [6:0] out1 = 7'h00;
+
+	virtual function write(ps2_item item);
+		if (out0 == item.out0 && out1 == item.out1)
+			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
+		else
+			`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))	// TODO
+		
+		// TODO
+		
+
+	endfunction
 endclass
 
 // Environment
