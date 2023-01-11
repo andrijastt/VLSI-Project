@@ -4,12 +4,14 @@ import uvm_pkg::*;
 class ps2_item extends uvm_sequence_item;
 
     rand bit in;
+	rand bit kbclk;
     bit [6:0] out0;
     bit [6:0] out1;
 
     `uvm_object_utils_begin(reg8_item)
-		`uvm_field_int(in, UVM_DEFAULT)
-		`uvm_field_int(out0, UVM_ALL_ON)
+		`uvm_field_int(in, UVM_ALL_ON)
+		`uvm_field_int(kbclk, UVM_ALL_ON)
+		`uvm_field_int(out0, UVM_NOPRINT)
 		`uvm_field_int(out1, UVM_NOPRINT)
 	`uvm_object_utils_end
 
@@ -20,8 +22,8 @@ class ps2_item extends uvm_sequence_item;
     virtual function string my_print();
 
         return $sformatf(
-			"in = %1b out0 = %7b out1 = %7b",
-			in, out0, out1
+			"in = %1b kbclk = %1b out0 = %7b out1 = %7b",
+			in, kbclk, out0, out1
 		); 
 
     endfunction
@@ -321,10 +323,9 @@ module testbench;
 		.clk(clk),
         .kbclk(dut_if.kbclk),
 		.rst_n(dut_if.rst_n),
-		.ld(dut_if.ld),
-		.inc(dut_if.inc),
 		.in(dut_if.in),
-		.out(dut_if.out)
+		.out0(dut_if.out0),
+		.out1(dut_if.out1)
 	);
 
     initial begin
