@@ -40,7 +40,7 @@ class generator extends uvm_sequence;
     endfunction //new()
 
 	// TODO
-    int num = 20;
+    int num = 200;
 	virtual task body();
 		for (int i = 0; i < num; i++) begin
 			ps2_item item = ps2_item::type_id::create("item");
@@ -78,6 +78,7 @@ class driver extends uvm_driver #(ps2_item);
 			seq_item_port.get_next_item(item);
 			`uvm_info("Driver", $sformatf("%s", item.my_print()), UVM_LOW)
 			vif.in <= item.in;
+			vif.kbclk <= item.kbclk;
 			@(posedge vif.clk);
 			seq_item_port.item_done();
 		end
@@ -111,6 +112,7 @@ class monitor extends uvm_monitor;
 			ps2_item item = ps2_item::type_id::create("item");
 			@(posedge vif.clk);
 			item.in = vif.in;
+			item.kbclk = vif.kbclk;
 			item.out0 = vif.out0;
             item.out1 = vif.out1;
 			`uvm_info("Monitor", $sformatf("%s", item.my_print()), UVM_LOW)
@@ -174,11 +176,12 @@ class scoreboard extends uvm_scoreboard;
 		if (out0 == item.out0 && out1 == item.out1)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
-			`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))	// TODO
+			`uvm_error("Scoreboard", $sformatf("FAIL! expected_out0 = %8b, expected_out1 = %8b, 
+			got_out0 = %8b", got_out1 = %8b, out0, out1, item.out0, item.out1))	// TODO
 		
 	// TODO
 	// valjda se ovako pisu funckuje
-	function int hex(int value);
+	function bit[6:0] hex(int value);
 
 		case (value)
 			4'b0000: return ~7'h3F;
