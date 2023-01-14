@@ -8,7 +8,7 @@ class ps2_item extends uvm_sequence_item;
     bit [6:0] out0;
     bit [6:0] out1;
 
-    `uvm_object_utils_begin(reg8_item)
+    `uvm_object_utils_begin(ps2_item) //TODO treba ps2_item?
 		`uvm_field_int(in, UVM_ALL_ON)
 		`uvm_field_int(kbclk, UVM_ALL_ON)
 		`uvm_field_int(out0, UVM_NOPRINT)
@@ -177,7 +177,7 @@ class scoreboard extends uvm_scoreboard;
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected_out0 = %8b, expected_out1 = %8b, 
-			got_out0 = %8b", got_out1 = %8b, out0, out1, item.out0, item.out1))	// TODO
+			got_out0 = %8b, got_out1 = %8b", out0, out1, item.out0, item.out1))	// TODO
 		
 	// TODO
 	// valjda se ovako pisu funckuje
