@@ -1,0 +1,116 @@
+QuestaSim-64 vlog 10.4c Compiler 2015.07 Jul 20 2015
+Start time: 21:14:52 on Jan 14,2023
+vlog -work work -l ./vlog_compile.log -override_timescale 1 ps / 1 ps ../src/simulation/modules/ps2.v ../src/simulation/testbench.sv 
+-- Compiling module ps2
+** Warning: ../src/simulation/modules/ps2.v(58): (vlog-2182) 'i' might be read before written in always_comb or always @* block.
+** Note: (vlog-2286) Using implicit +incdir+C:/questasim64_10.4c/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+** Error: (vlog-13069) ../src/simulation/testbench.sv(20): near "endfunction": syntax error, unexpected endfunction, expecting ';'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(38): near "function": syntax error, unexpected function.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(40): near "endfunction": syntax error, unexpected endfunction, expecting ';'.
+** Error: ../src/simulation/testbench.sv(45): (vlog-2730) Undefined variable: 'num'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(53): near "endtask": syntax error, unexpected endtask.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(60)
+** at ../src/simulation/testbench.sv(60): (vlog-2730) Undefined variable: 'driver'.
+** Warning: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(60)
+** at ../src/simulation/testbench.sv(60): (vlog-2953) Incorrect usage of keyword 'static'.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(60)
+** at ../src/simulation/testbench.sv(60): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(60)
+** at ../src/simulation/testbench.sv(60): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(60)
+** at ../src/simulation/testbench.sv(60): near "endfunction": syntax error, unexpected endfunction.
+** Error: ../src/simulation/testbench.sv(63): 'super.new()' call can only be made from within a class constructor.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(64): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(72): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(85): near "endtask": syntax error, unexpected endtask.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): (vlog-2730) Undefined variable: 'monitor'.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): Typedef 'type_id' multiply defined.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): 'get_type' already exists; must not be redefined as a function.
+** Warning: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): (vlog-2953) Incorrect usage of keyword 'static'.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(92)
+** at ../src/simulation/testbench.sv(92): near "endfunction": syntax error, unexpected endfunction.
+** Error: ../src/simulation/testbench.sv(95): 'super.new()' call can only be made from within a class constructor.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(96): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(101): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(106): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(121): near "endtask": syntax error, unexpected endtask.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): (vlog-2730) Undefined variable: 'agent'.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): Typedef 'type_id' multiply defined.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): 'get_type' already exists; must not be redefined as a function.
+** Warning: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): (vlog-2953) Incorrect usage of keyword 'static'.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(128)
+** at ../src/simulation/testbench.sv(128): near "endfunction": syntax error, unexpected endfunction.
+** Error: ../src/simulation/testbench.sv(131): 'super.new()' call can only be made from within a class constructor.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(132): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(135): near ";": syntax error, unexpected ';', expecting '('.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(138): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: ../src/simulation/testbench.sv(140): (vlog-2730) Undefined variable: 'd0'.
+** Error: ../src/simulation/testbench.sv(140): (vlog-2164) Class or package 'driver' not found.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(140): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ../src/simulation/testbench.sv(141): (vlog-2730) Undefined variable: 'm0'.
+** Error: ../src/simulation/testbench.sv(141): (vlog-2164) Class or package 'monitor' not found.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(141): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(143): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(148): near "endfunction": syntax error, unexpected endfunction.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): (vlog-2730) Undefined variable: 'scoreboard'.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): Typedef 'type_id' multiply defined.
+** Error: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): 'get_type' already exists; must not be redefined as a function.
+** Warning: ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): (vlog-2953) Incorrect usage of keyword 'static'.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ** while parsing macro expansion: 'uvm_component_utils' starting at ../src/simulation/testbench.sv(155)
+** at ../src/simulation/testbench.sv(155): near "endfunction": syntax error, unexpected endfunction.
+** Error: ../src/simulation/testbench.sv(158): 'super.new()' call can only be made from within a class constructor.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(159): near "endfunction": syntax error, unexpected endfunction.
+** Error: ../src/simulation/testbench.sv(165): (vlog-2730) Undefined variable: 'mon_analysis_imp'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(166): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(175): near "function": syntax error, unexpected function, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+** Error: ../src/simulation/testbench.sv(176): (vlog-2730) Undefined variable: 'out0'.
+** Warning: ../src/simulation/testbench.sv(179): (vlog-2269) Unterminated string literal continues onto next line 179.
+** Warning: ** while parsing macro expansion: 'uvm_error' starting at ../src/simulation/testbench.sv(179)
+** at ../src/simulation/testbench.sv(180): (vlog-2643) Unterminated string literal continues onto next line.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(184): near "function": syntax error, unexpected function.
+** Error: ../src/simulation/testbench.sv(186): (vlog-2730) Undefined variable: 'value'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(205): near "endfunction": syntax error, unexpected endfunction.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(216): near "end": syntax error, unexpected end.
+** Error: ../src/simulation/testbench.sv(219): (vlog-2730) Undefined variable: 'i'.
+** Error: ../src/simulation/testbench.sv(221): (vlog-2730) Undefined variable: 'data'.
+** Error: ../src/simulation/testbench.sv(222): (vlog-2730) Undefined variable: 'out0'.
+** Error: ../src/simulation/testbench.sv(223): (vlog-2730) Undefined variable: 'out1'.
+** Error: ../src/simulation/testbench.sv(227): (vlog-2730) Undefined variable: 'current_state'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(232): near "end": syntax error, unexpected end.
+** Error: ../src/simulation/testbench.sv(249): Invalid type 'agent'. Please check the type of the variable 'a0'.
+** Error: ../src/simulation/testbench.sv(250): Invalid type 'scoreboard'. Please check the type of the variable 'sb0'.
+** Error: ../src/simulation/testbench.sv(254): (vlog-2730) Undefined variable: 'a0'.
+** Error: ../src/simulation/testbench.sv(254): (vlog-2164) Class or package 'agent' not found.
+** Error: ../src/simulation/testbench.sv(254): (vlog-2730) Undefined variable: 'agent'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(254): near "::": syntax error, unexpected ::, expecting ';'.
+** Error: ../src/simulation/testbench.sv(255): (vlog-2730) Undefined variable: 'sb0'.
+** Error: ../src/simulation/testbench.sv(255): (vlog-2164) Class or package 'scoreboard' not found.
+** Error: ../src/simulation/testbench.sv(255): (vlog-2730) Undefined variable: 'scoreboard'.
+** Error: (vlog-13069) ../src/simulation/testbench.sv(255): near "::": syntax error, unexpected ::, expecting ';'.
+-- Compiling interface ps2_if
+End time: 21:14:53 on Jan 14,2023, Elapsed time: 0:00:01
+Errors: 74, Warnings: 7
