@@ -61,7 +61,7 @@ module ps2(
         end
     end
 
-    always @(*) begin
+    always @(negedge deb_kbclk) begin
         data_next = data_reg;
         data_next1 = data_reg1;
         next_next = next_reg;
@@ -69,7 +69,7 @@ module ps2(
         cnt_next = cnt_reg; 
         byteCnt_next = byteCnt_reg; 
 
-        if(deb_kbclk) begin
+        // if(deb_kbclk) begin
 
             case (state_reg)
                 start: begin
@@ -113,7 +113,7 @@ module ps2(
                     end
                 end
             endcase
-        end
+        // end
 
     end
 

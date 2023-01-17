@@ -42,7 +42,7 @@ module ps2(
     localparam start = 1'b0;
     localparam data_transfer = 1'b1;
 
-    always @(posedge clk, negedge rst_n) begin
+    always @(posedge clk,posedge deb_kbclk, negedge rst_n) begin
         if(!rst_n) begin
             data_reg <= 8'h00;
             data_reg1 <= 8'h00;
@@ -69,16 +69,16 @@ module ps2(
         cnt_next = cnt_reg; 
         byteCnt_next = byteCnt_reg; 
 
-        if(deb_kbclk) begin
+        // if(deb_kbclk) begin
 
             case (state_reg)
                 start: begin
                     if(cnt_reg == 0 && in == 1'b0) begin
                         state_next = data_transfer;
                     end      
-                    else begin
-                        byteCnt_next=0; 
-                    end
+                    // else begin
+                    //     byteCnt_next=0; 
+                    // end
                 end
 
                 data_transfer: begin
@@ -113,7 +113,7 @@ module ps2(
                     end
                 end
             endcase
-        end
+        // end
 
     end
 
