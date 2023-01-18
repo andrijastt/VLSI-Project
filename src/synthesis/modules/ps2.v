@@ -35,13 +35,6 @@ module ps2(
     hex hex_inst3(.in(display_reg3), .out(out3));//treca cifra 
 
     integer cnt_reg, cnt_next;
-    integer byteCnt_reg, byteCnt_next; 
-
-    reg state_reg, state_next;
-
-    localparam start = 1'b0;
-    localparam data_transfer = 1'b1;
-
     reg flag_reg, flag_next; 
 
     always @(posedge clk, negedge rst_n) begin
@@ -49,8 +42,6 @@ module ps2(
             data_reg <= 8'h00;
             data_reg1 <= 8'h00;
             next_reg <= 8'h00;
-            state_reg <= start;
-            byteCnt_reg<=0; 
             cnt_reg<=0; 
             flag_reg<=1'b0; 
         end
@@ -58,8 +49,6 @@ module ps2(
             data_reg <= data_next;
             data_reg1 <= data_next1;
             next_reg <= next_next;
-            state_reg <= state_next;
-            byteCnt_reg<=byteCnt_next;
             cnt_reg<=cnt_next;
             flag_reg<=flag_next;
         end
@@ -70,7 +59,6 @@ module ps2(
         next_next = next_reg;
         cnt_next = cnt_reg; 
         flag_next = flag_reg;
-        // byteCnt_next = byteCnt_reg;
 
         if(cnt_reg == 0 && in == 1'b0) begin
             cnt_next = cnt_reg + 1;
@@ -94,7 +82,6 @@ module ps2(
     end
 
     always @(posedge flag_reg) begin
-        byteCnt_next = byteCnt_reg;
         data_next = data_reg;
         data_next1 = data_reg1;
 
