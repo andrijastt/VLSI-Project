@@ -109,16 +109,25 @@ module ps2(
 
         if(byteCnt_reg == 0)begin
             data_next = next_next; //prvi bajt 
+            byteCnt_next = byteCnt_reg+1; 
         end
-        else if(byteCnt_reg==1) begin
-            if(next_next == data_reg)begin
-                if(next_next==8'hF0)begin
-                
-                end
+        else begin
+            if(next_next == next_reg )begin //isti su 
+                byteCnt_next=0;
             end
-            data_next1 = next_next; //drugi bajt 
+            else begin
+                byteCnt_next = byteCnt_reg+1; 
+            end
+
+            if(byteCnt_reg == 1) begin
+                data_next1 = next_next; //drugi bajt 
+            end else begin
+                if(byteCnt_reg == 0)begin
+                    data_next1 = 8'h00; //drugi bajt 
+                end
+
+            end
         end
-        byteCnt_next = byteCnt_reg+1; 
     
     end
 
