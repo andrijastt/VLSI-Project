@@ -66,69 +66,45 @@ module ps2(
     end
 
     always @(negedge deb_kbclk) begin
+
         next_next = next_reg;
-        state_next = state_reg;
         cnt_next = cnt_reg; 
-        flag_next = flag_reg; 
+        flag_next = flag_reg;
+        // byteCnt_next = byteCnt_reg;
 
+        if(cnt_reg == 0 && in == 1'b0) begin
+            cnt_next = cnt_reg + 1;
+        end
 
-        case (state_reg)
-            start: begin
-                if(cnt_reg == 0 && in == 1'b0) begin
-                    state_next = data_transfer;
-                end      
-            end
+        if(cnt_reg > 0 && cnt_reg < 9) begin
+            next_next[cnt_reg - 1] = in;
+            cnt_next = cnt_reg + 1;
+        end
 
-            data_transfer: begin
+        if(cnt_reg == 9) begin
+            flag_next = 1'b1;
+            cnt_next = cnt_reg + 1;
+        end
 
-                if(cnt_reg < 4'h8) begin
-                    next_next[cnt_reg] = in;
-                end
-
-                cnt_next = cnt_reg + 4'h1;
-
-                if(cnt_reg==9)begin
-                    flag_next=1'b1; 
-                end
-                else if(cnt_reg==10)begin
-                    flag_next=1'b0; 
-                    cnt_next = 0; 
-                    state_next = start;
-                end
-
-            end
-        endcase
-
+        if(cnt_reg == 10)begin
+            flag_next = 1'b0;
+            cnt_next = 0;
+        end
+        
     end
 
-
-    always @(posedge flag_reg)begin
+    always @(posedge flag_reg) begin
+        byteCnt_next = byteCnt_reg;
         data_next = data_reg;
         data_next1 = data_reg1;
-        byteCnt_next = byteCnt_reg; 
 
-        if(byteCnt_reg == 0)begin
-            data_next = next_next; //prvi bajt 
-            byteCnt_next = byteCnt_reg+1; 
+        if(next_next == next_reg && next_next!=8'hF0)begin
+            data_next = next_next;
         end
-        else begin
-            if(next_next == next_reg )begin //isti su 
-                byteCnt_next=0;
-            end
-            else begin
-                byteCnt_next = byteCnt_reg+1; 
-            end
-
-            if(byteCnt_reg == 1) begin
-                data_next1 = next_next; //drugi bajt 
-            end else begin
-                if(byteCnt_reg == 0)begin
-                    data_next1 = 8'h00; //drugi bajt 
-                end
-
-            end
+        else if(next_next == next_reg && next_next==8'hF0)begin
+            data_next1 = next_next; 
         end
-    
+
     end
 
 endmodule
