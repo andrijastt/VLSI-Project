@@ -42,6 +42,8 @@ module ps2(
     localparam start = 1'b0;
     localparam data_transfer = 1'b1;
 
+    reg flag_reg, flag_next; 
+
     always @(posedge clk, negedge rst_n) begin
         if(!rst_n) begin
             data_reg <= 8'h00;
@@ -50,6 +52,7 @@ module ps2(
             state_reg <= start;
             byteCnt_reg<=0; 
             cnt_reg<=0; 
+            flag_reg<=1'b0; 
         end
         else begin
             data_reg <= data_next;
@@ -58,63 +61,65 @@ module ps2(
             state_reg <= state_next;
             byteCnt_reg<=byteCnt_next;
             cnt_reg<=cnt_next;
+            flag_reg<=flag_next;
         end
     end
 
     always @(negedge deb_kbclk) begin
-        data_next = data_reg;
-        data_next1 = data_reg1;
         next_next = next_reg;
         state_next = state_reg;
         cnt_next = cnt_reg; 
+        flag_next = flag_reg; 
+
+
+        case (state_reg)
+            start: begin
+                if(cnt_reg == 0 && in == 1'b0) begin
+                    state_next = data_transfer;
+                end      
+            end
+
+            data_transfer: begin
+
+                if(cnt_reg < 4'h8) begin
+                    next_next[cnt_reg] = in;
+                end
+
+                cnt_next = cnt_reg + 4'h1;
+
+                if(cnt_reg==9)begin
+                    flag_next=1'b1; 
+                end
+                else if(cnt_reg==10)begin
+                    flag_next=1'b0; 
+                    cnt_next = 0; 
+                    state_next = start;
+                end
+
+            end
+        endcase
+
+    end
+
+
+    always @(posedge flag_reg)begin
+        data_next = data_reg;
+        data_next1 = data_reg1;
         byteCnt_next = byteCnt_reg; 
 
-        // if(deb_kbclk) begin
-
-            case (state_reg)
-                start: begin
-                    if(cnt_reg == 0 && in == 1'b0) begin
-                        state_next = data_transfer;
-                    end      
-                    else begin
-                        byteCnt_next=0; 
-                    end
+        if(byteCnt_reg == 0)begin
+            data_next = next_next; //prvi bajt 
+        end
+        else if(byteCnt_reg==1) begin
+            if(next_next == data_reg)begin
+                if(next_next==8'hF0)begin
+                
                 end
-
-                data_transfer: begin
-
-                    if(cnt_reg < 4'h8) begin
-                        next_next[cnt_reg] = in;
-                    end
-
-                    cnt_next = cnt_reg + 4'h1;
-
-                    // reset
-                    if (cnt_reg == 8 && next_next != 8'hF0) begin
-                        if(byteCnt_reg == 0)begin
-                            data_next = next_next; //prvi bajt 
-                        end
-                        else if(byteCnt_reg==1) begin
-                            data_next1 = next_next; //drugi bajt 
-                        end
-                        cnt_next = 0;                        
-                    end
-
-                    if(cnt_reg == 10) begin
-                        byteCnt_next = byteCnt_reg+1; 
-                        // if(byteCnt == 1)begin
-                        //     data_next = 8'h00;      // ne znam da li ovako da stavimo ili ne
-                        // end
-                        // else if(byteCnt==2) begin
-                        //     data_next1 =8'h00; 
-                        // end
-                        state_next = start;
-                        cnt_next = 0;
-                    end
-                end
-            endcase
-        // end
-
+            end
+            data_next1 = next_next; //drugi bajt 
+        end
+        byteCnt_next = byteCnt_reg+1; 
+    
     end
 
 endmodule
