@@ -36,7 +36,7 @@ module ps2(
 
     integer cnt_reg, cnt_next;
     integer byte_reg, byte_next; 
-    reg displFlag_reg, displFlag_next; 
+    reg [1:0] displFlag_reg, displFlag_next; 
     reg flag_reg, flag_next; 
 
     always @(posedge clk, negedge rst_n) begin
@@ -47,7 +47,7 @@ module ps2(
             cnt_reg<=0; 
             flag_reg<=1'b0; 
             byte_reg<=0; 
-            flag_reg<=1'b0; 
+            displFlag_reg<=2'b00; 
         end
         else begin
             data_reg <= data_next;
@@ -56,7 +56,7 @@ module ps2(
             cnt_reg<=cnt_next;
             flag_reg<=flag_next;
             byte_reg<=byte_next; 
-            flag_reg<=flag_next; 
+            displFlag_reg<=displFlag_next; 
         end
     end
 
@@ -93,12 +93,13 @@ module ps2(
         displFlag_next=displFlag_reg;
 
 
-        if(displFlag_reg==1'b0 && next_next!=8'hF0 )begin
-            displFlag_next=1'b1; 
+        if(displFlag_reg==2'b00 && next_next!=8'hF0 )begin
+            displFlag_next=2'b01; 
             data_next = next_next;
             data_next1 = 8'h00;
         end
-        else if(displFlag_reg==1'b1)begin
+        else 
+        if(displFlag_reg==2'b01)begin
 
             if(data_reg == next_next && next_next!=8'hF0 )begin
                 data_next = next_next; 
@@ -109,8 +110,11 @@ module ps2(
             end
 
             if(next_next==8'hF0)begin
-                displFlag_next=1'b0;
+                displFlag_next=2'b11;
             end
+        end
+        else begin
+            displFlag_next=2'b00;
         end
         // else if(next_next == next_reg && next_next==8'hF0)begin
         //     data_next1 = next_next; 
