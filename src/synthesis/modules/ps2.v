@@ -35,6 +35,8 @@ module ps2(
     hex hex_inst3(.in(display_reg3), .out(out3));//treca cifra 
 
     integer cnt_reg, cnt_next;
+    integer byte_reg, byte_next; 
+    reg displFlag_reg, displFlag_next; 
     reg flag_reg, flag_next; 
 
     always @(posedge clk, negedge rst_n) begin
@@ -44,6 +46,8 @@ module ps2(
             next_reg <= 8'h00;
             cnt_reg<=0; 
             flag_reg<=1'b0; 
+            byte_reg<=0; 
+            flag_reg<=1'b0; 
         end
         else begin
             data_reg <= data_next;
@@ -51,6 +55,8 @@ module ps2(
             next_reg <= next_next;
             cnt_reg<=cnt_next;
             flag_reg<=flag_next;
+            byte_reg<=byte_next; 
+            flag_reg<=flag_next; 
         end
     end
 
@@ -84,13 +90,32 @@ module ps2(
     always @(posedge flag_reg) begin
         data_next = data_reg;
         data_next1 = data_reg1;
+        displFlag_next=displFlag_reg;
 
-        if(next_next == next_reg && next_next!=8'hF0)begin
+
+        if(displFlag_reg==1'b0 && next_next!=8'hF0 )begin
+            displFlag_next=1'b1; 
             data_next = next_next;
+            data_next1 = 8'h00;
         end
-        else if(next_next == next_reg && next_next==8'hF0)begin
-            data_next1 = next_next; 
+        else if(displFlag_reg==1'b1)begin
+
+            if(data_reg == next_next && next_next!=8'hF0 )begin
+                data_next = next_next; 
+            end 
+            else begin
+                if(data_reg1==8'h00)
+                    data_next1 = next_next;
+            end
+
+            if(next_next==8'hF0)begin
+                displFlag_next=1'b0;
+            end
         end
+        // else if(next_next == next_reg && next_next==8'hF0)begin
+        //     data_next1 = next_next; 
+        // end
+
 
     end
 
