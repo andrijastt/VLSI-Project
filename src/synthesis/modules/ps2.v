@@ -109,7 +109,17 @@ module ps2(
         if(displFlag_reg==2'b01)begin
 
             if((data_reg == next_next && next_next!=8'hF0) || data_reg == 8'h00)begin
-                data_next = next_next; 
+                if(next_next == 8'h12 && data_reg1 == 8'hE0) begin
+                    data_next = 8'h7C;
+                    data_next1 = 8'hE0;
+                end
+                else
+                if(next_next == 8'h14 && data_reg1 == 8'hE1) begin
+                    data_next = 8'h77;
+                    data_next1 = 8'hF0;
+                end 
+                else
+                    data_next = next_next;
             end 
             else begin
                 if(data_reg1==8'h00) begin
