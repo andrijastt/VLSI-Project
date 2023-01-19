@@ -93,20 +93,28 @@ module ps2(
         displFlag_next=displFlag_reg;
 
 
-        if(displFlag_reg==2'b00 && next_next!=8'hF0 )begin
+        if(displFlag_reg==2'b00 && next_next!=8'hF0)begin
+
+            if(next_next == 8'hE0 || next_next == 8'hE1) begin
+                data_next1 = next_next;
+                data_next = 8'h00;
+            end
+            else begin
+                data_next = next_next;
+                data_next1 = 8'h00;
+            end
             displFlag_next=2'b01; 
-            data_next = next_next;
-            data_next1 = 8'h00;
         end
         else 
         if(displFlag_reg==2'b01)begin
 
-            if(data_reg == next_next && next_next!=8'hF0 )begin
+            if((data_reg == next_next && next_next!=8'hF0) || data_reg == 8'h00)begin
                 data_next = next_next; 
             end 
             else begin
-                if(data_reg1==8'h00)
+                if(data_reg1==8'h00) begin
                     data_next1 = next_next;
+                end
             end
 
             if(next_next==8'hF0)begin
