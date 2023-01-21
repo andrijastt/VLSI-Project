@@ -119,6 +119,8 @@ class monitor extends uvm_monitor;
 			item.kbclk = vif.kbclk;
 			item.out0 = vif.out0;
             item.out1 = vif.out1;
+            item.out2 = vif.out2;
+            item.out3 = vif.out3;
 			`uvm_info("Monitor", $sformatf("%s", item.my_print()), UVM_LOW)
 			mon_analysis_port.write(item);
 		end
@@ -185,28 +187,28 @@ class scoreboard extends uvm_scoreboard;
 		
 	// TODO
 	// valjda se ovako pisu funckuje
-	function bit[6:0] hex(int value);
+	// function bit[6:0] hex(int value);
 
-		case (value)
-			4'b0000: return ~7'h3F;
-            4'b0001: return ~7'h06;
-            4'b0010: return ~7'h5B;
-            4'b0011: return ~7'h4F;
-            4'b0100: return ~7'h66;
-            4'b0101: return ~7'h6D;
-            4'b0110: return ~7'h7D;
-            4'b0111: return ~7'h07;
-            4'b1000: return ~7'h7F;
-            4'b1001: return ~7'h6F;
-            4'b1010: return ~7'h77;
-            4'b1011: return ~7'h7C;
-            4'b1100: return ~7'h39;
-            4'b1101: return ~7'h5E;
-            4'b1110: return ~7'h79;
-            4'b1111: return ~7'h71; 
-		endcase
+	// 	case (value)
+	// 		4'b0000: return ~7'h3F;
+    //         4'b0001: return ~7'h06;
+    //         4'b0010: return ~7'h5B;
+    //         4'b0011: return ~7'h4F;
+    //         4'b0100: return ~7'h66;
+    //         4'b0101: return ~7'h6D;
+    //         4'b0110: return ~7'h7D;
+    //         4'b0111: return ~7'h07;
+    //         4'b1000: return ~7'h7F;
+    //         4'b1001: return ~7'h6F;
+    //         4'b1010: return ~7'h77;
+    //         4'b1011: return ~7'h7C;
+    //         4'b1100: return ~7'h39;
+    //         4'b1101: return ~7'h5E;
+    //         4'b1110: return ~7'h79;
+    //         4'b1111: return ~7'h71; 
+	// 	endcase
 
-	endfunction
+	// endfunction
 	
 		// TODO
 		// 0 came, state change, track output
@@ -314,6 +316,8 @@ interface ps2_if (
     logic in;
     logic [7:0] out0;
     logic [7:0] out1;
+    logic [7:0] out2;
+    logic [7:0] out3;
 
 endinterface
 
@@ -332,7 +336,9 @@ module testbench;
 		.rst_n(dut_if.rst_n),
 		.in(dut_if.in),
 		.out0(dut_if.out0),
-		.out1(dut_if.out1)
+		.out1(dut_if.out1),
+		.out1(dut_if.out2),
+		.out1(dut_if.out3)
 	);
 
     initial begin
