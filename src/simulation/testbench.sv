@@ -7,23 +7,27 @@ class ps2_item extends uvm_sequence_item;
 	rand bit kbclk;
     bit [6:0] out0;
     bit [6:0] out1;
+	bit [6:0] out2;
+	bit [6:0] out3;
 
     `uvm_object_utils_begin(ps2_item) //TODO treba ps2_item?
 		`uvm_field_int(in, UVM_ALL_ON)
 		`uvm_field_int(kbclk, UVM_ALL_ON)
 		`uvm_field_int(out0, UVM_NOPRINT)
 		`uvm_field_int(out1, UVM_NOPRINT)
+		`uvm_field_int(out2, UVM_NOPRINT)
+		`uvm_field_int(out3, UVM_NOPRINT)
 	`uvm_object_utils_end
 
     function new(string name = "ps2_item");
-        super.new(name)
+        super.new(name);
     endfunction
 
     virtual function string my_print();
 
         return $sformatf(
-			"in = %1b kbclk = %1b out0 = %7b out1 = %7b",
-			in, kbclk, out0, out1
+			"in = %1b kbclk = %1b out0 = %7b out1 = %7b out2 = %7b out3 = %7b",
+			in, kbclk, out0, out1, out2, out3
 		); 
 
     endfunction
@@ -36,8 +40,8 @@ class generator extends uvm_sequence;
     `uvm_object_utils_begin(generator)
 
     function new(string name = "generator");
-        super.new(name)
-    endfunction //new()
+        super.new(name);
+    endfunction
 
 	// TODO
     int num = 200;
