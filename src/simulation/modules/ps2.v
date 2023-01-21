@@ -35,7 +35,6 @@ module ps2(
     hex hex_inst3(.in(display_reg3), .out(out3)); //treca cifra 
 
     integer cnt_reg, cnt_next;
-    reg E1_reg, E1_next; 
     reg [1:0] displFlag_reg, displFlag_next; 
     reg flag_reg, flag_next; 
 
@@ -46,7 +45,6 @@ module ps2(
             next_reg <= 8'h00;
             cnt_reg<=0; 
             flag_reg<=1'b0; 
-            E1_reg<=1'b0; 
             displFlag_reg<=2'b00; 
         end
         else begin
@@ -54,8 +52,7 @@ module ps2(
             data_reg1 <= data_next1;
             next_reg <= next_next;
             cnt_reg<=cnt_next;
-            flag_reg<=flag_next;
-            E1_reg<=E1_next; 
+            flag_reg<=flag_next; 
             displFlag_reg<=displFlag_next; 
         end
     end
@@ -91,27 +88,16 @@ module ps2(
         data_next = data_reg;
         data_next1 = data_reg1;
         displFlag_next=displFlag_reg;
-        E1_next = E1_reg;
 
         if(displFlag_reg==2'b00 && next_next!=8'hF0)begin
 
             if(next_next == 8'hE0 || next_next == 8'hE1) begin
-
-                if(next_next == 8'hE1) begin
-                    E1_next = 1'b1;
-                end 
-
                 data_next1 = next_next;
                 data_next = 8'h00;
             end
             else begin
                 data_next = next_next;
-                if(E1_reg == 1'b1) begin
-                    data_next1 = 8'hF0; 
-                    E1_next = 1'b0;
-                end
-                else 
-                    data_next1 = 8'h00; 
+                data_next1 = 8'h00; 
 
             end
             displFlag_next=2'b01; 

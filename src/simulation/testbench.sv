@@ -1,131 +1,131 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 
+// Sequence Item
 class ps2_item extends uvm_sequence_item;
 
-    rand bit in;
-	rand bit kbclk;
-    bit [6:0] out0;
-    bit [6:0] out1;
+	randc bit kbclk;
+	rand bit in;
+	bit [6:0] out0;
+	bit [6:0] out1;
 	bit [6:0] out2;
 	bit [6:0] out3;
-
-    `uvm_object_utils_begin(ps2_item) //TODO treba ps2_item?
+	
+	`uvm_object_utils_begin(ps2_item)
+		`uvm_field_int(kbclk, UVM_DEFAULT | UVM_BIN)
 		`uvm_field_int(in, UVM_ALL_ON)
-		`uvm_field_int(kbclk, UVM_ALL_ON)
 		`uvm_field_int(out0, UVM_NOPRINT)
 		`uvm_field_int(out1, UVM_NOPRINT)
 		`uvm_field_int(out2, UVM_NOPRINT)
 		`uvm_field_int(out3, UVM_NOPRINT)
 	`uvm_object_utils_end
-
-    function new(string name = "ps2_item");
-        super.new(name);
-    endfunction
-
-    virtual function string my_print();
-
-        return $sformatf(
-			"in = %1b kbclk = %1b out0 = %7b out1 = %7b out2 = %7b out3 = %7b",
-			in, kbclk, out0, out1, out2, out3
-		); 
-
-    endfunction
+	
+	function new(string name = "ps2_item");
+		super.new(name);
+	endfunction
+	
+	virtual function string my_print();
+		return $sformatf(
+			"kbclk = %1b in = %1b out0 = %7b out1 = %7b out2 = %7b out3 = %7b",
+			kbclk, in, out0, out1, out2, out3
+		);
+	endfunction
 
 endclass
 
-// Generator
+// Sequence
 class generator extends uvm_sequence;
 
-    `uvm_object_utils_begin(generator)
-
-    function new(string name = "generator");
-        super.new(name);
-    endfunction
-
-	// TODO
-    int num = 200;
+	`uvm_object_utils(generator)
+	
+	function new(string name = "generator");
+		super.new(name);
+	endfunction
+	
+	int num = 20;
+	
 	virtual task body();
 		for (int i = 0; i < num; i++) begin
 			ps2_item item = ps2_item::type_id::create("item");
-			start_item(item);	
+			start_item(item);
 			item.randomize();
 			`uvm_info("Generator", $sformatf("Item %0d/%0d created", i + 1, num), UVM_LOW)
 			item.print();
 			finish_item(item);
 		end
 	endtask
-
+	
 endclass
 
 // Driver
 class driver extends uvm_driver #(ps2_item);
-
-    `uvm_component_utils(driver)
+	
+	`uvm_component_utils(driver)
 	
 	function new(string name = "driver", uvm_component parent = null);
 		super.new(name, parent);
 	endfunction
-
-    virtual ps2_if vif;
-
-    virtual function void build_phase(uvm_phase phase);
+	
+	virtual ps2_if vif;
+	
+	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		if (!uvm_config_db#(virtual ps2_if)::get(this, "", "ps2_if", vif))
+		if (!uvm_config_db#(virtual ps2_if)::get(this, "", "ps2_vif", vif))
 			`uvm_fatal("Driver", "No interface.")
 	endfunction
-
-    virtual task run_phase(uvm_phase phase);
+	
+	virtual task run_phase(uvm_phase phase);
 		super.run_phase(phase);
 		forever begin
 			ps2_item item;
 			seq_item_port.get_next_item(item);
 			`uvm_info("Driver", $sformatf("%s", item.my_print()), UVM_LOW)
-			vif.in <= item.in;
 			vif.kbclk <= item.kbclk;
+			vif.in <= item.in;
 			@(posedge vif.clk);
 			seq_item_port.item_done();
 		end
 	endtask
-
+	
 endclass
 
 // Monitor
+
 class monitor extends uvm_monitor;
 	
 	`uvm_component_utils(monitor)
-
-    function new(string name = "monitor", uvm_component parent = null);
+	
+	function new(string name = "monitor", uvm_component parent = null);
 		super.new(name, parent);
 	endfunction
 	
 	virtual ps2_if vif;
 	uvm_analysis_port #(ps2_item) mon_analysis_port;
-
-    virtual function void build_phase(uvm_phase phase);
+	
+	virtual function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
 		if (!uvm_config_db#(virtual ps2_if)::get(this, "", "ps2_vif", vif))
 			`uvm_fatal("Monitor", "No interface.")
 		mon_analysis_port = new("mon_analysis_port", this);
 	endfunction
-
-    virtual task run_phase(uvm_phase phase);	
+	
+	virtual task run_phase(uvm_phase phase);	
 		super.run_phase(phase);
 		@(posedge vif.clk);
 		forever begin
 			ps2_item item = ps2_item::type_id::create("item");
 			@(posedge vif.clk);
-			item.in = vif.in;
 			item.kbclk = vif.kbclk;
+			item.in = vif.in;
 			item.out0 = vif.out0;
-            item.out1 = vif.out1;
-            item.out2 = vif.out2;
-            item.out3 = vif.out3;
+			item.out1 = vif.out1;
+			item.out2 = vif.out2;
+			item.out3 = vif.out3;
 			`uvm_info("Monitor", $sformatf("%s", item.my_print()), UVM_LOW)
 			mon_analysis_port.write(item);
 		end
 	endtask
-
+	
 endclass
 
 // Agent
@@ -171,76 +171,21 @@ class scoreboard extends uvm_scoreboard;
 		mon_analysis_imp = new("mon_analysis_imp", this);
 	endfunction
 	
-	// TODO
-	bit [6:0] out0 = 7'h00;
-	bit [6:0] out1 = 7'h00;
-	bit current_state = 1'b0;
-	bit [3:0] i = 4'h0;
-	bit [7:0] data = 8'h00;
-
-	virtual function write(ps2_item item);
-		if (out0 == item.out0 && out1 == item.out1)
-			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
-		else
-			`uvm_error("Scoreboard", $sformatf("FAIL! expected_out0 = %8b, expected_out1 = %8b, 
-			got_out0 = %8b, got_out1 = %8b", out0, out1, item.out0, item.out1))	// TODO
-		
-	// TODO
-	// valjda se ovako pisu funckuje
-	// function bit[6:0] hex(int value);
-
-	// 	case (value)
-	// 		4'b0000: return ~7'h3F;
-    //         4'b0001: return ~7'h06;
-    //         4'b0010: return ~7'h5B;
-    //         4'b0011: return ~7'h4F;
-    //         4'b0100: return ~7'h66;
-    //         4'b0101: return ~7'h6D;
-    //         4'b0110: return ~7'h7D;
-    //         4'b0111: return ~7'h07;
-    //         4'b1000: return ~7'h7F;
-    //         4'b1001: return ~7'h6F;
-    //         4'b1010: return ~7'h77;
-    //         4'b1011: return ~7'h7C;
-    //         4'b1100: return ~7'h39;
-    //         4'b1101: return ~7'h5E;
-    //         4'b1110: return ~7'h79;
-    //         4'b1111: return ~7'h71; 
-	// 	endcase
-
-	// endfunction
+	//TODO
+	// bit [7:0] reg8 = 8'h00;
 	
-		// TODO
-		// 0 came, state change, track output
-
-		case (current_state)
-			1'b0: begin
-				if(item.in == 1'b0) begin
-					data = 8'h00;
-					current_state = 1'b1;
-				end
-			end 
-			1'b1: begin
-				data[i] == item.in;
-				i = i + 1;
-
-				if(i == 4'h8 && data != 8'hF0) begin
-					out0 = hex(data[3:0]);
-					out1 = hex(data[7:4]);
-					// pogledati kako da se napravi funkcija za HEX da bi se postavili OUT i da se uporedjuju
-				end
-				else begin
-					current_state = 1'b0;
-				end
-
-				i = 4'h0;
-
-			end
-		endcase
-
+	virtual function write(ps2_item item);
+	// 	if (reg8 == item.out)
+			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
+	// 	else
+	// 		`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))
 		
-
+	// 	if (item.ld)
+	// 		reg8 = item.in;
+	// 	else if (item.inc)
+	// 		reg8 = reg8 + 8'h01;
 	endfunction
+	
 endclass
 
 // Environment
@@ -311,37 +256,37 @@ interface ps2_if (
 	input bit clk
 );
 
-    logic kbclk; 
 	logic rst_n;
+	logic kbclk;
     logic in;
-    logic [7:0] out0;
-    logic [7:0] out1;
-    logic [7:0] out2;
-    logic [7:0] out3;
+    logic [6:0] out0;
+    logic [6:0] out1;
+    logic [6:0] out2;
+    logic [6:0] out3;
 
 endinterface
 
-
+// Testbench
 module testbench;
 
-    reg clk;
-
-    ps2_if dut_if (
+	reg clk;
+	
+	ps2_if dut_if (
 		.clk(clk)
 	);
-
-    ps2 dut (
+	
+	ps2 dut (
 		.clk(clk),
-        .kbclk(dut_if.kbclk),
 		.rst_n(dut_if.rst_n),
+		.kbclk(dut_if.kbclk),
 		.in(dut_if.in),
 		.out0(dut_if.out0),
 		.out1(dut_if.out1),
-		.out1(dut_if.out2),
-		.out1(dut_if.out3)
+		.out2(dut_if.out2),
+		.out3(dut_if.out3)
 	);
 
-    initial begin
+	initial begin
 		clk = 0;
 		forever begin
 			#10 clk = ~clk;
