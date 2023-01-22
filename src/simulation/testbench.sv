@@ -173,17 +173,24 @@ class scoreboard extends uvm_scoreboard;
 	
 	//TODO
 	// bit [7:0] reg8 = 8'h00;
-	
+	bit [6:0] ps2_out0 = 7'h00;
+	bit [6:0] ps2_out1 = 7'h00;
+	bit [6:0] ps2_out2 = 7'h00;
+	bit [6:0] ps2_out3 = 7'h00;
+	bit [3:0] ones_counter = 3'o0;
+
 	virtual function write(ps2_item item);
-	// 	if (reg8 == item.out)
+
+		// sada verovatno ovde saljemo bit po bit i vrsimo proveru
+
+		if (ps2_out0 == item.out0 && ps2_out1 == item.out1 && ps2_out2 == item.out2 && ps2_out3 == item.out3)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
-	// 	else
-	// 		`uvm_error("Scoreboard", $sformatf("FAIL! expected = %8b, got = %8b", reg8, item.out))
-		
-	// 	if (item.ld)
-	// 		reg8 = item.in;
-	// 	else if (item.inc)
-	// 		reg8 = reg8 + 8'h01;
+		else
+			`uvm_error("Scoreboard", $sformatf("FAIL! expected out0 = %7b out1 = %7b out2 = %7b out3 = %7b, 
+			got out0 = %7b out1 = %7b out2 = %7b out3 = %7b", 
+			ps2_out0, ps2_out1, ps2_out2, ps2_out3, 
+			item.out0, item.out1, item.out2, item.out3))
+	
 	endfunction
 	
 endclass
