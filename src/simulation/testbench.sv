@@ -172,25 +172,89 @@ class scoreboard extends uvm_scoreboard;
 	endfunction
 	
 	//TODO
-	// bit [7:0] reg8 = 8'h00;
+	bit [7:0] data = 8'h00;
 	bit [6:0] ps2_out0 = 7'h00;
 	bit [6:0] ps2_out1 = 7'h00;
 	bit [6:0] ps2_out2 = 7'h00;
 	bit [6:0] ps2_out3 = 7'h00;
-	bit [3:0] ones_counter = 3'o0;
+	bit [4:0] ones_counter = 4'h0;
+
+	bit odd_parity = 1'b0;
+	bit negedge_happend = 1'b0;
+	bit flag_kbclk = 1'b0; 
+	bit kbclk_prev = 1'b0; 
 
 	virtual function write(ps2_item item);
 
 		// sada verovatno ovde saljemo bit po bit i vrsimo proveru
+		/*
+			Genereise 11bit-a, plus nonstop kbclk~
+			1. Provera da li dolazi start bit
+				Zatim 8bit dolaze kako dolaze nije bitno
+			2. Provera da li je dobar odd parity
+			3. Provera da li je dobar stop bit
+
+			Generise se item -> provera kbclk == 1 && prover kbdat == 0
+				Manualno posedismo kblkc = ~kbaclki ako je kbdat bio == 1 stavimo da je kbdat = 0
+
+			cnt = 0
+			
+			# provera da je dosao prvi dobar start bit
+			if item.in == 0 and item.kbclk == 1 and cnt == 0:
+				cnt += 1
+				ones_counter = 0			
+			
+			if cnt in range(1,8):
+				data[cnt-1] = item.in
+				cnt += 1
+				if item.in == 1:
+					ones_counter += 1
+			
+			# provea za odd_parity
+			if cnt == 9:
+				odd_parity = ones_ounter % 2;
+
+			if item.in == 1 and cnt == 10:
+				PASSED
+			else:
+				if odd_parity != item.in and cnt == 9:
+					FAILED!
+					flag_failed = 1
+				else:
+					if cnt < 10:
+						cnt += 1
+					else:
+						FAILED!
+
+			
+
+		*/
+
 
 		if (ps2_out0 == item.out0 && ps2_out1 == item.out1 && ps2_out2 == item.out2 && ps2_out3 == item.out3)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected out0 = %7b out1 = %7b out2 = %7b out3 = %7b, 
-			got out0 = %7b out1 = %7b out2 = %7b out3 = %7b", 
+			got out0 = %7b out1 = %7b out2 = %7b out3 = %7b kbclk = %1b in = %1b", 
 			ps2_out0, ps2_out1, ps2_out2, ps2_out3, 
-			item.out0, item.out1, item.out2, item.out3))
+			item.out0, item.out1, item.out2, item.out3,
+			item.kbclk, item.in))
 	
+		if(flag_kbclk == 1'b0) begin
+			kbclk_prev = item.kbclk;
+			flag_kbclk = 1'b1;
+		end
+		else begin
+			if(item.kbclk == 1'b0 && kbclk_prev == 1'b1)
+				negedge_happend = 1'b1;
+		end
+
+		if(negedge_happend == 1'b1) begin
+			
+		end
+
+		negedge_happend = 1'b0;
+
 	endfunction
 	
 endclass

@@ -194,8 +194,16 @@ module DE0_TOP (CLOCK_50,
     //  Structural coding
     // ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  ==  == 
 
-    // ps2 ps2_inst(.clk(CLOCK_50), .kbclk(PS2_KBCLK), .rst_n(SW[9]), .in(PS2_KBDAT), .out0(HEX0_D), .out1(HEX1_D), out2(HEX2_D), out3(HEX3_D));
-    ps2 ps2_inst(CLOCK_50, PS2_KBCLK, SW[9], PS2_KBDAT, HEX0_D, HEX1_D, HEX2_D, HEX3_D);
+    wire deb_kbclk;
+    deb deb_inst(CLOCK_50, SW[9], PS2_KBCLK, deb_kbclk);
+    wire [7:0] data_reg0, data_reg1;
+    ps2 ps2_inst(CLOCK_50, deb_kbclk, SW[9], PS2_KBDAT, data_reg0, data_reg1);
+    hex hex_inst0(data_reg0[3:0], HEX0_D);
+    hex hex_inst1(data_reg0[7:4], HEX1_D);
+    hex hex_inst2(data_reg1[3:0], HEX2_D);
+    hex hex_inst3(data_reg1[7:4], HEX3_D);
+
+    // ps2 ps2_inst(CLOCK_50, PS2_KBCLK, SW[9], PS2_KBDAT, HEX0_D, HEX1_D, HEX2_D, HEX3_D);
 
 
 endmodule

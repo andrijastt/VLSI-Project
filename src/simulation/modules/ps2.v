@@ -3,36 +3,19 @@ module ps2(
     input kbclk,
     input rst_n,
     input in,
-    output [6:0] out0,
-    output [6:0] out1,
-    output [6:0] out2,
-    output [6:0] out3
+    output [7:0] out0,
+    output [7:0] out1
 );
-
-    wire deb_kbclk;
-    deb deb_inst(.clk(clk), .rst_n(rst_n), .in(kbclk), .out(deb_kbclk));
 
     // value used for dsiplay
     reg [7:0] data_reg, data_next;
     reg [7:0] data_reg1, data_next1;
 
+    assign out0 = data_reg;
+    assign out1 = data_reg1;
+
     // value used for changing value
     reg [7:0] next_reg, next_next;
-
-    wire [3:0] display_reg0;
-    wire [3:0] display_reg1;
-    wire [3:0] display_reg2;
-    wire [3:0] display_reg3;
-
-    assign display_reg0 = data_reg[3:0];
-    assign display_reg1 = data_reg[7:4];
-    assign display_reg2 = data_reg1[3:0];
-    assign display_reg3 = data_reg1[7:4];
-
-    hex hex_inst0(.in(display_reg0), .out(out0)); //nulta cifra
-    hex hex_inst1(.in(display_reg1), .out(out1)); //prva cifra
-    hex hex_inst2(.in(display_reg2), .out(out2)); //druga cifra
-    hex hex_inst3(.in(display_reg3), .out(out3)); //treca cifra 
 
     integer cnt_reg, cnt_next;
     reg [1:0] displFlag_reg, displFlag_next; 
@@ -57,7 +40,7 @@ module ps2(
         end
     end
 
-    always @(negedge deb_kbclk) begin
+    always @(negedge kbclk) begin
 
         next_next = next_reg;
         cnt_next = cnt_reg; 
