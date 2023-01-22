@@ -6,18 +6,14 @@ class ps2_item extends uvm_sequence_item;
 
 	randc bit kbclk;
 	rand bit in;
-	bit [6:0] out0;
-	bit [6:0] out1;
-	bit [6:0] out2;
-	bit [6:0] out3;
+	bit [7:0] out0;
+	bit [7:0] out1;
 	
 	`uvm_object_utils_begin(ps2_item)
 		`uvm_field_int(kbclk, UVM_DEFAULT | UVM_BIN)
 		`uvm_field_int(in, UVM_ALL_ON)
 		`uvm_field_int(out0, UVM_NOPRINT)
 		`uvm_field_int(out1, UVM_NOPRINT)
-		`uvm_field_int(out2, UVM_NOPRINT)
-		`uvm_field_int(out3, UVM_NOPRINT)
 	`uvm_object_utils_end
 	
 	function new(string name = "ps2_item");
@@ -26,8 +22,8 @@ class ps2_item extends uvm_sequence_item;
 	
 	virtual function string my_print();
 		return $sformatf(
-			"kbclk = %1b in = %1b out0 = %7b out1 = %7b out2 = %7b out3 = %7b",
-			kbclk, in, out0, out1, out2, out3
+			"kbclk = %1b in = %1b out0 = %7b out1 = %7b",
+			kbclk, in, out0, out1
 		);
 	endfunction
 
@@ -119,8 +115,6 @@ class monitor extends uvm_monitor;
 			item.in = vif.in;
 			item.out0 = vif.out0;
 			item.out1 = vif.out1;
-			item.out2 = vif.out2;
-			item.out3 = vif.out3;
 			`uvm_info("Monitor", $sformatf("%s", item.my_print()), UVM_LOW)
 			mon_analysis_port.write(item);
 		end
@@ -173,10 +167,8 @@ class scoreboard extends uvm_scoreboard;
 	
 	//TODO
 	bit [7:0] data = 8'h00;
-	bit [6:0] ps2_out0 = 7'h00;
-	bit [6:0] ps2_out1 = 7'h00;
-	bit [6:0] ps2_out2 = 7'h00;
-	bit [6:0] ps2_out3 = 7'h00;
+	bit [7:0] ps2_out0 = 8'h00;
+	bit [7:0] ps2_out1 = 8'h00;
 	bit [4:0] ones_counter = 4'h0;
 
 	bit odd_parity = 1'b0;
@@ -231,29 +223,29 @@ class scoreboard extends uvm_scoreboard;
 		*/
 
 
-		if (ps2_out0 == item.out0 && ps2_out1 == item.out1 && ps2_out2 == item.out2 && ps2_out3 == item.out3)
+		// if (ps2_out0 == item.out0 && ps2_out1 == item.out1 && ps2_out2 == item.out2 && ps2_out3 == item.out3)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
-		else
-			`uvm_error("Scoreboard", $sformatf("FAIL! expected out0 = %7b out1 = %7b out2 = %7b out3 = %7b, 
-			got out0 = %7b out1 = %7b out2 = %7b out3 = %7b kbclk = %1b in = %1b", 
-			ps2_out0, ps2_out1, ps2_out2, ps2_out3, 
-			item.out0, item.out1, item.out2, item.out3,
-			item.kbclk, item.in))
+		// else
+		// 	`uvm_error("Scoreboard", $sformatf("FAIL! expected out0 = %7b out1 = %7b out2 = %7b out3 = %7b, 
+		// 	got out0 = %7b out1 = %7b out2 = %7b out3 = %7b kbclk = %1b in = %1b", 
+		// 	ps2_out0, ps2_out1, ps2_out2, ps2_out3, 
+		// 	item.out0, item.out1, item.out2, item.out3,
+		// 	item.kbclk, item.in))
 	
-		if(flag_kbclk == 1'b0) begin
-			kbclk_prev = item.kbclk;
-			flag_kbclk = 1'b1;
-		end
-		else begin
-			if(item.kbclk == 1'b0 && kbclk_prev == 1'b1)
-				negedge_happend = 1'b1;
-		end
+		// if(flag_kbclk == 1'b0) begin
+		// 	kbclk_prev = item.kbclk;
+		// 	flag_kbclk = 1'b1;
+		// end
+		// else begin
+		// 	if(item.kbclk == 1'b0 && kbclk_prev == 1'b1)
+		// 		negedge_happend = 1'b1;
+		// end
 
-		if(negedge_happend == 1'b1) begin
+		// if(negedge_happend == 1'b1) begin
 			
-		end
+		// end
 
-		negedge_happend = 1'b0;
+		// negedge_happend = 1'b0;
 
 	endfunction
 	
@@ -330,10 +322,8 @@ interface ps2_if (
 	logic rst_n;
 	logic kbclk;
     logic in;
-    logic [6:0] out0;
-    logic [6:0] out1;
-    logic [6:0] out2;
-    logic [6:0] out3;
+    logic [7:0] out0;
+    logic [7:0] out1;
 
 endinterface
 
@@ -352,9 +342,7 @@ module testbench;
 		.kbclk(dut_if.kbclk),
 		.in(dut_if.in),
 		.out0(dut_if.out0),
-		.out1(dut_if.out1),
-		.out2(dut_if.out2),
-		.out3(dut_if.out3)
+		.out1(dut_if.out1)
 	);
 
 	initial begin

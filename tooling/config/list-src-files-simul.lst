@@ -1,4 +1,2 @@
-src/simulation/modules/deb.v
-src/simulation/modules/hex.v
 src/simulation/modules/ps2.v
 src/simulation/testbench.sv
