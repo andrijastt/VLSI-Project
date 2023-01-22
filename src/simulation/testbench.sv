@@ -4,7 +4,7 @@ import uvm_pkg::*;
 // Sequence Item
 class ps2_item extends uvm_sequence_item;
 
-	randc bit kbclk;
+	rand bit kbclk;
 	rand bit in;
 	bit [7:0] out0;
 	bit [7:0] out1;
@@ -183,8 +183,8 @@ class scoreboard extends uvm_scoreboard;
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %7b verif_out1 = %7b, 
-			got out0 = %7b out1 = %7b, kbclk = %1b in = %1b data = %8b", 
-			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in, data))
+			got out0 = %7b out1 = %7b, kbclk = %1b in = %1b", 
+			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in))
 	
 		if(flag_kbclk == 1'b0) begin
 			kbclk_prev = item.kbclk;
@@ -198,18 +198,15 @@ class scoreboard extends uvm_scoreboard;
 
 		if(negedge_happend == 1'b1) begin
 
-			if(cnt == 4'h0 && item.in == 1'b0) begin
+			if((cnt == 4'h0 && item.in == 1'b0) || cnt > 4'h0) begin
 				cnt = cnt + 4'h1;
 			end
 
 			if(cnt > 4'h0 && cnt < 4'h9) begin
 				data[cnt - 4'h1] = item.in;
-				cnt = cnt + 4'h1;
 			end
 
 			if(cnt == 4'h9) begin
-				cnt = cnt + 4'h1;
-				
 				if(data == 8'hE0 || data == 8'hE1) begin
 					ps2_out1 = data;
 					ps2_out0 = 8'h00;
@@ -220,10 +217,7 @@ class scoreboard extends uvm_scoreboard;
 						if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
 							ps2_out1 = 8'h00;
 						end
-						$display("USLO data! %d", data);
-						$display("USLO pre! %d", ps2_out0);
 						ps2_out0 = data;
-						$display("USLO posle! %d", ps2_out0);
 					end
 					else begin
 						if(ps2_out1 != 8'hE0 && ps2_out1 != 8'hE1) begin
