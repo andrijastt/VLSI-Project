@@ -4,7 +4,7 @@ import uvm_pkg::*;
 // Sequence Item
 class ps2_item extends uvm_sequence_item;
 
-	rand bit kbclk;
+	bit kbclk;
 	rand bit in;
 	bit [7:0] out0;
 	bit [7:0] out1;
@@ -39,12 +39,15 @@ class generator extends uvm_sequence;
 	endfunction
 	
 	int num = 200;
-	
+	bit kbclk = 1'b1;
+
 	virtual task body();
 		for (int i = 0; i < num; i++) begin
 			ps2_item item = ps2_item::type_id::create("item");
 			start_item(item);
 			item.randomize();
+			item.kbclk = kbclk;
+			kbclk = ~kbclk;
 			`uvm_info("Generator", $sformatf("Item %0d/%0d created", i + 1, num), UVM_LOW)
 			item.print();
 			finish_item(item);
@@ -182,10 +185,9 @@ class scoreboard extends uvm_scoreboard;
 		if (ps2_out0 == item.out0 && ps2_out1 == item.out1)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
-			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %7b verif_out1 = %7b, 
-			got out0 = %7b out1 = %7b, kbclk = %1b in = %1b", 
+			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %8b verif_out1 = %8b, got out0 = %8b out1 = %8b, kbclk = %1b in = %1b", 
 			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in))
-	
+
 		if(flag_kbclk == 1'b0) begin
 			kbclk_prev = item.kbclk;
 			flag_kbclk = 1'b1;
@@ -204,6 +206,8 @@ class scoreboard extends uvm_scoreboard;
 
 			if(cnt > 4'h0 && cnt < 4'h9) begin
 				data[cnt - 4'h1] = item.in;
+				if(cnt == 4'h8)
+					$display("DATA NEW %8h", data);
 			end
 
 			if(cnt == 4'h9) begin
@@ -217,7 +221,9 @@ class scoreboard extends uvm_scoreboard;
 						if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
 							ps2_out1 = 8'h00;
 						end
+						$display("DATA OUT0 BEFORE %8h", ps2_out0);
 						ps2_out0 = data;
+						$display("DATA OUT0 AFTER %8h", ps2_out0);
 					end
 					else begin
 						if(ps2_out1 != 8'hE0 && ps2_out1 != 8'hE1) begin
