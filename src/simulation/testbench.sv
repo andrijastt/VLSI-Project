@@ -22,7 +22,7 @@ class ps2_item extends uvm_sequence_item;
 	
 	virtual function string my_print();
 		return $sformatf(
-			"kbclk = %1b in = %1b out0 = %8b out1 = %8b",
+			"kbclk = %1b in = %1b out0 = %2h out1 = %2h",
 			kbclk, in, out0, out1
 		);
 	endfunction
@@ -186,7 +186,7 @@ class scoreboard extends uvm_scoreboard;
 		if (ps2_out0 == item.out0 && ps2_out1 == item.out1)
 			`uvm_info("Scoreboard", $sformatf("PASS!"), UVM_LOW)
 		else
-			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %8b verif_out1 = %8b, got out0 = %8b out1 = %8b, kbclk = %1b in = %1b", 
+			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %2h verif_out1 = %2h, got out0 = %2h out1 = %2h, kbclk = %1b in = %1b", 
 			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in))
 
 		if(flag_kbclk == 1'b0) begin
@@ -207,8 +207,8 @@ class scoreboard extends uvm_scoreboard;
 
 			if(cnt > 4'h1 && cnt < 4'hA) begin
 				data[cnt - 4'h2] = item.in;
-				if(cnt == 4'h9)
-					// $display("DATA NEW %8h", data);
+				// if(cnt == 4'h9)
+				// 	$display("DATA NEW %2h", data);
 			end
 
 			if(cnt == 4'hA) begin
@@ -219,18 +219,18 @@ class scoreboard extends uvm_scoreboard;
 					end
 					else begin
 
-						if((data != 8'hF0 && ps2_out0 == data) || ps2_out0 == 8'h0) begin
+						if((data != 8'hF0 && ps2_out0 == data) || ps2_out0 == 8'h00) begin
 							if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
 								ps2_out1 = 8'h00;
 							end
 							ps2_out0 = data;
-							// $display("DATAIF OUT0 AFTER %8h, OUT1 AFTER %8b", ps2_out0, ps2_out1);
+							// $display("DATAIF OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
 						end
 						else begin
 							if(ps2_out1 == 8'h00) begin
 								ps2_out1 = data;
 							end
-							// $display("DATAELSE OUT0 AFTER %8h, OUT1 AFTER %8b", ps2_out0, ps2_out1);
+							// $display("DATAELSE OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
 						end
 					end
 				end
