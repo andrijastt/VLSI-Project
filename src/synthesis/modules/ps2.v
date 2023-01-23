@@ -40,9 +40,9 @@ module ps2(
             data_reg1 <= data_next1;
             next_reg <= next_next;
             cnt_reg<=cnt_next;
-            flag_reg<=flag_next; 
             parity_reg<=parity_next; 
             stop_reg<=stop_next; 
+            flag_reg<=flag_next; 
             displFlag_reg<=displFlag_next; 
         end
     end
@@ -76,16 +76,16 @@ module ps2(
         end
 
         if(cnt_reg == 10)begin
-            flag_next = 1'b0;
             if(in == 1'b0) begin
                 stop_next = 1'b1;
             end
+            flag_next = 1'b0;
             cnt_next = 0;
         end
         
     end
 
-    always @(posedge flag_reg) begin
+    always @(negedge flag_reg) begin
         data_next = data_reg;
         data_next1 = data_reg1;
         displFlag_next=displFlag_reg;
@@ -93,6 +93,7 @@ module ps2(
         if(parity_reg || stop_reg) begin
             data_next = 8'hFF;
             data_next1 = 8'hFF;
+            displFlag_next=2'b00;
         end
         else begin
             if(displFlag_reg==2'b00 && next_next!=8'hF0)begin
