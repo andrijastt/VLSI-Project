@@ -39,7 +39,7 @@ class generator extends uvm_sequence;
 	endfunction
 	
 	int num = 200;
-	bit kbclk = 1'b1;
+	bit kbclk = 1'b0;
 
 	virtual task body();
 		for (int i = 0; i < num; i++) begin
@@ -189,11 +189,11 @@ class scoreboard extends uvm_scoreboard;
 			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in))
 
 		if(flag_kbclk == 1'b0) begin
-			kbclk_prev = item.kbclk;
-			flag_kbclk = 1'b1;
+			if(item.kbclk == 1'b1)
+				flag_kbclk = 1'b1;
 		end
 		else begin
-			if(item.kbclk == 1'b0 && kbclk_prev == 1'b1)
+			if(item.kbclk == 1'b0)
 				negedge_happend = 1'b1;
 			flag_kbclk = 1'b0;
 		end
@@ -204,13 +204,13 @@ class scoreboard extends uvm_scoreboard;
 				cnt = cnt + 4'h1;
 			end
 
-			if(cnt > 4'h0 && cnt < 4'h9) begin
-				data[cnt - 4'h1] = item.in;
-				if(cnt == 4'h8)
+			if(cnt > 4'h1 && cnt < 4'hA) begin
+				data[cnt - 4'h2] = item.in;
+				if(cnt == 4'h9)
 					$display("DATA NEW %8h", data);
 			end
 
-			if(cnt == 4'h9) begin
+			if(cnt == 4'hA) begin
 				if(data == 8'hE0 || data == 8'hE1) begin
 					ps2_out1 = data;
 					ps2_out0 = 8'h00;
@@ -233,7 +233,7 @@ class scoreboard extends uvm_scoreboard;
 				end
 			end
 
-			if(cnt == 4'hA)begin
+			if(cnt == 4'hB)begin
 				cnt = 4'h0;
 			end
 
