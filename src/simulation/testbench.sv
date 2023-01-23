@@ -45,9 +45,9 @@ class generator extends uvm_sequence;
 		for (int i = 0; i < num; i++) begin
 			ps2_item item = ps2_item::type_id::create("item");
 			start_item(item);
-			item.randomize();
 			item.kbclk = kbclk;
 			kbclk = ~kbclk;
+			item.randomize();
 			`uvm_info("Generator", $sformatf("Item %0d/%0d created", i + 1, num), UVM_LOW)
 			item.print();
 			finish_item(item);
@@ -179,6 +179,7 @@ class scoreboard extends uvm_scoreboard;
 	bit negedge_happend = 1'b0;
 	bit flag_kbclk = 1'b0; 
 	bit kbclk_prev = 1'b0; 
+	bit first_time = 1'b1;
 
 	virtual function write(ps2_item item);
 
@@ -207,31 +208,34 @@ class scoreboard extends uvm_scoreboard;
 			if(cnt > 4'h1 && cnt < 4'hA) begin
 				data[cnt - 4'h2] = item.in;
 				if(cnt == 4'h9)
-					$display("DATA NEW %8h", data);
+					// $display("DATA NEW %8h", data);
 			end
 
 			if(cnt == 4'hA) begin
-				$display("DATA OUT CHANGE");
-				
-				if(data == 8'hE0 || data == 8'hE1) begin
-					ps2_out1 = data;
-					ps2_out0 = 8'h00;
-				end
-				else begin
-
-					if(data != 8'hF0) begin
-						if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
-							ps2_out1 = 8'h00;
-						end
-						$display("DATA OUT0 BEFORE %8h", ps2_out0);
-						ps2_out0 = data;
-						$display("DATA OUT0 AFTER %8h", ps2_out0);
+				if(first_time == 1'b0) begin				
+					if(data == 8'hE0 || data == 8'hE1) begin
+						ps2_out1 = data;
+						ps2_out0 = 8'h00;
 					end
 					else begin
-						if(ps2_out1 != 8'hE0 && ps2_out1 != 8'hE1) begin
-							ps2_out1 = data;
+
+						if((data != 8'hF0 && ps2_out0 == data) || ps2_out0 == 8'h0) begin
+							if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
+								ps2_out1 = 8'h00;
+							end
+							ps2_out0 = data;
+							// $display("DATAIF OUT0 AFTER %8h, OUT1 AFTER %8b", ps2_out0, ps2_out1);
+						end
+						else begin
+							if(ps2_out1 == 8'h00) begin
+								ps2_out1 = data;
+							end
+							// $display("DATAELSE OUT0 AFTER %8h, OUT1 AFTER %8b", ps2_out0, ps2_out1);
 						end
 					end
+				end
+				else begin
+					first_time = 1'b0;
 				end
 			end
 
