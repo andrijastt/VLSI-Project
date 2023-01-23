@@ -22,7 +22,7 @@ class ps2_item extends uvm_sequence_item;
 	
 	virtual function string my_print();
 		return $sformatf(
-			"kbclk = %1b in = %1b out0 = %7b out1 = %7b",
+			"kbclk = %1b in = %1b out0 = %8b out1 = %8b",
 			kbclk, in, out0, out1
 		);
 	endfunction
@@ -211,6 +211,8 @@ class scoreboard extends uvm_scoreboard;
 			end
 
 			if(cnt == 4'hA) begin
+				$display("DATA OUT CHANGE");
+				
 				if(data == 8'hE0 || data == 8'hE1) begin
 					ps2_out1 = data;
 					ps2_out0 = 8'h00;
