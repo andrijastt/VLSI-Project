@@ -192,6 +192,41 @@ class scoreboard extends uvm_scoreboard;
 			`uvm_error("Scoreboard", $sformatf("FAIL! expected verif_out0 = %2h verif_out1 = %2h, got out0 = %2h out1 = %2h, kbclk = %1b in = %1b", 
 			ps2_out0, ps2_out1, item.out0, item.out1, item.kbclk, item.in))
 
+		if(cnt == 4'hC) begin
+			cnt = 4'h0;
+			
+			if(parity || stop) begin
+				ps2_out0 = 8'hFF;
+				ps2_out1 = 8'hFF;
+			end
+			else begin
+				if(data == 8'hE0 || data == 8'hE1) begin
+					ps2_out1 = data;
+					ps2_out0 = 8'h00;
+				end
+				else begin
+
+					if((data != 8'hF0 && ps2_out0 == data) || ps2_out0 == 8'h00 || ps2_out0 == 8'hFF) begin
+						if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
+							ps2_out1 = 8'h00;
+						end
+						ps2_out0 = data;
+						$display("DATAIF OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
+					end
+					else begin
+						if(ps2_out1 == 8'h00 || ps2_out1 == 8'hFF) begin
+							ps2_out1 = data;
+						end
+						$display("DATAELSE OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
+					end
+				end
+			end
+
+			stop = 1'b0;
+			parity = 1'b0;
+		end
+
+
 		if(flag_kbclk == 1'b0) begin
 			if(item.kbclk == 1'b1)
 				flag_kbclk = 1'b1;
@@ -223,48 +258,13 @@ class scoreboard extends uvm_scoreboard;
 			end
 
 			if(cnt == 4'hB)begin
-				cnt = 4'h0;
+				cnt = cnt + 1'b1;
 				// proverimo stop
 				if(item.in == 1'b0) begin
 					stop = 1'b1;
 					$display("DATASTOP NEW %2h", data);
 				end
 
-				// if(first_time == 1'b0) begin				
-
-					if(parity || stop) begin
-						ps2_out0 = 8'hFF;
-						ps2_out1 = 8'hFF;
-					end
-					else begin
-						if(data == 8'hE0 || data == 8'hE1) begin
-							ps2_out1 = data;
-							ps2_out0 = 8'h00;
-						end
-						else begin
-
-							if((data != 8'hF0 && ps2_out0 == data) || ps2_out0 == 8'h00 || ps2_out0 == 8'hFF) begin
-								if((ps2_out1 != 8'hE0 || ps2_out1 != 8'hE1) && ps2_out0 != data) begin
-									ps2_out1 = 8'h00;
-								end
-								ps2_out0 = data;
-								$display("DATAIF OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
-							end
-							else begin
-								if(ps2_out1 == 8'h00 || ps2_out1 == 8'hFF) begin
-									ps2_out1 = data;
-								end
-								$display("DATAELSE OUT0 AFTER %2h, OUT1 AFTER %2h", ps2_out0, ps2_out1);
-							end
-						end
-					end
-
-				// end
-				// else begin
-				// 	first_time = 1'b0;
-				// end
-				stop = 1'b0;
-				parity = 1'b0;
 			end
 			
 		end
