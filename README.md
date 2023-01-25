@@ -1,4 +1,4 @@
-This is a project for course "VLSI Systems". Done with @Karadzov00.
+This is a project for course "VLSI Systems". Done with [@Karadzov00](https://github.com/Karadzov00).
 
 Project description can be found in "Postavka.pdf". 
 
